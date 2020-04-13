@@ -1,0 +1,20 @@
+{
+  "name": "elmodoro",
+  "version": "1.0.0",
+  "description": "Pomodoro(c) timer written in Elm",
+  "main": "index.html",
+  "repository": "https://github.com/lambda-mike/elmodoro.git",
+  "author": "Michał Grygierzec <michal.grygierzec@gmail.com>",
+  "license": "Copyright(c) Michał Grygierzec",
+  "scripts": {
+    "dev": "parcel --port 5314 index.html",
+    "build": "parcel build --no-source-maps index.html"
+  },
+  "dependencies": {
+    "src": "^1.1.2"
+  },
+  "devDependencies": {
+    "elm-hot": "^1.1.4",
+    "node-elm-compiler": "^5.0.4"
+  }
+}

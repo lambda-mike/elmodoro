@@ -1,0 +1,14 @@
+@keyframes shake {
+  from { transform: translateX(0px); }
+  16%  { transform: translateX(10px); }
+  32%  { transform: translateX(-8px); }
+  48%  { transform: translateX(6px); }
+  64%  { transform: translateX(-4px); }
+  80%  { transform: translateX(2px); }
+  96%  { transform: translateX(-1px); }
+  to   { transform: translateX(0px); }
+}
+
+.timer {
+  animation: 1s ease-in shake;
+}
