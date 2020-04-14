@@ -17,8 +17,6 @@ With _watch_ mode:
 
 `yarn dev`
 
-`parcel --port 5314 index.html`
-
 Only Elm:
 
 `elm reactor`
@@ -28,10 +26,4 @@ And navigate to localhost:8000 and click _src/Main.elm_
 ### Prod
 
 `yarn build`
-
-`parcel build index.html`
-
-Without source maps:
-
-`parcel build --no-source-maps index.html`
 
