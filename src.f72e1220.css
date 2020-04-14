@@ -1,0 +1,1 @@
+@keyframes shake{0%{transform:translateX(0)}16%{transform:translateX(10px)}32%{transform:translateX(-8px)}48%{transform:translateX(6px)}64%{transform:translateX(-4px)}80%{transform:translateX(2px)}96%{transform:translateX(-1px)}to{transform:translateX(0)}}.timer{animation:shake 1s ease-in}
