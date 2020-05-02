@@ -33,8 +33,8 @@ import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
 import Element.Region as Region
-import Html exposing (Html)
-import Html.Attributes exposing (class, id, title)
+import Html exposing (Html, audio)
+import Html.Attributes exposing (class, id, src, title, type_)
 import Html.Events exposing (onClick)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
@@ -83,6 +83,9 @@ type Ms
 
 
 port saveTimerModel : Encode.Value -> Cmd msg
+
+
+port playSound : () -> Cmd msg
 
 
 main =
@@ -379,6 +382,7 @@ update msg model =
                             [ saveTimerModel <|
                                 encodeTimer Stopped
                             , focusStartButton
+                            , playSound ()
                             ]
 
                     else
@@ -574,9 +578,17 @@ view model =
                             ]
                             [ resetButton model.timer ]
                         ]
+
+        audioBell =
+            audio
+                [ src "bell.mp3"
+                , id "audio-bell"
+                , type_ "audio/mpeg"
+                ]
+                []
     in
     { title = constructTitle model.timer
-    , body = [ appRoot ]
+    , body = [ appRoot, audioBell ]
     }
 
 

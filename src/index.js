@@ -32,4 +32,21 @@ import { Elm } from './Main.elm'
       console.error('saveTimerModel error: ', err)
     }
   })
+
+  app.ports.playSound.subscribe(function() {
+    const bell = document.querySelector('#audio-bell')
+    if (!bell) {
+      console.error('Audio element not found')
+      return
+    }
+    if (bell && typeof bell.play === 'function') {
+      try {
+        bell.play()
+      }
+      catch (err) {
+        console.error('Erron when playing sound', err)
+      }
+    }
+  })
+
 })()

@@ -8,7 +8,7 @@
   "license": "Copyright(c) Michał Grygierzec",
   "scripts": {
     "dev": "parcel --port 5314 index.html",
-    "build": "parcel build --no-source-maps --public-url ./ index.html"
+    "build": "parcel build --no-source-maps --public-url ./ index.html && cp bell.mp3 dist/"
   },
   "dependencies": {
     "elm": "^0.19.1-3",
