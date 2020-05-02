@@ -86,12 +86,17 @@ port saveTimerModel : Encode.Value -> Cmd msg
 
 
 main =
-    Browser.element
+    Browser.document
         { init = init
         , subscriptions = subscriptions
         , update = update
         , view = view
         }
+
+
+appName : String
+appName =
+    "Elmodoro"
 
 
 
@@ -484,7 +489,7 @@ boxMaxWidth =
     380
 
 
-view : Model -> Html Msg
+view : Model -> Browser.Document Msg
 view model =
     let
         isMobile =
@@ -511,63 +516,89 @@ view model =
                 , Border.rounded buttonRadius
                 , Border.width 1
                 ]
+
+        appRoot =
+            Element.layout [] <|
+                el
+                    [ height fill
+                    , horizontalAlignment
+                    , centerY
+                    , width (fill |> minimum 285)
+                    , Background.color white
+                    ]
+                <|
+                    column
+                        ([ centerX
+                         , Font.center
+                         , Font.color black
+                         , Font.family
+                            [ Font.typeface "Open Sans"
+                            , Font.typeface "Nunito Sans"
+                            , Font.typeface "Source Sans Pro"
+                            , Font.typeface "Muli"
+                            , Font.typeface "Helvetica"
+                            , Font.typeface "Helvetica Neue"
+                            , Font.typeface "Ubuntu"
+                            , Font.typeface "Noto"
+                            , Font.typeface "Segoe UI"
+                            , Font.typeface "Arial"
+                            , Font.sansSerif
+                            ]
+                         , Font.size 24
+                         , Background.color white
+                         ]
+                            ++ mediaBoxStyles
+                        )
+                        [ wrappedRow
+                            [ width fill
+                            , centerY
+                            , paddingXY 0 20
+                            ]
+                            [ header ]
+                        , row
+                            [ width fill
+                            , centerY
+                            , paddingXY 0 20
+                            ]
+                            [ viewTimer model.timer ]
+                        , row
+                            [ width fill
+                            , centerY
+                            , paddingXY 0 10
+                            ]
+                            [ timerButton model.timer ]
+                        , row
+                            [ width fill
+                            , centerY
+                            , paddingXY 0 5
+                            ]
+                            [ resetButton model.timer ]
+                        ]
     in
-    Element.layout [] <|
-        el
-            [ height fill
-            , horizontalAlignment
-            , centerY
-            , width (fill |> minimum 285)
-            , Background.color white
-            ]
-        <|
-            column
-                ([ centerX
-                 , Font.center
-                 , Font.color black
-                 , Font.family
-                    [ Font.typeface "Open Sans"
-                    , Font.typeface "Nunito Sans"
-                    , Font.typeface "Source Sans Pro"
-                    , Font.typeface "Muli"
-                    , Font.typeface "Helvetica"
-                    , Font.typeface "Helvetica Neue"
-                    , Font.typeface "Ubuntu"
-                    , Font.typeface "Noto"
-                    , Font.typeface "Segoe UI"
-                    , Font.typeface "Arial"
-                    , Font.sansSerif
-                    ]
-                 , Font.size 24
-                 , Background.color white
-                 ]
-                    ++ mediaBoxStyles
-                )
-                [ wrappedRow
-                    [ width fill
-                    , centerY
-                    , paddingXY 0 20
-                    ]
-                    [ header ]
-                , row
-                    [ width fill
-                    , centerY
-                    , paddingXY 0 20
-                    ]
-                    [ viewTimer model.timer ]
-                , row
-                    [ width fill
-                    , centerY
-                    , paddingXY 0 10
-                    ]
-                    [ timerButton model.timer ]
-                , row
-                    [ width fill
-                    , centerY
-                    , paddingXY 0 5
-                    ]
-                    [ resetButton model.timer ]
-                ]
+    { title = constructTitle model.timer
+    , body = [ appRoot ]
+    }
+
+
+constructTitle : Timer -> String
+constructTitle timer =
+    case timer of
+        Stopped ->
+            appName ++ " | Ready"
+
+        Running _ ->
+            appName
+                ++ " | "
+                ++ (calculateCurrentCountdown timer |> countdownToString)
+
+        Paused _ ->
+            appName
+                ++ " | "
+                ++ (calculateCurrentCountdown timer |> countdownToString)
+                ++ " Paused"
+
+        Finished ->
+            appName ++ " | Finished"
 
 
 header : Element Msg
@@ -578,46 +609,57 @@ header =
         , width fill
         , alignLeft
         ]
-        (text "Elmodoro")
+        (text appName)
+
+
+calculateCurrentCountdown : Timer -> Ms
+calculateCurrentCountdown timer =
+    case timer of
+        Stopped ->
+            Ms elmodoro
+
+        Finished ->
+            Ms 0
+
+        Paused countdown ->
+            countdown
+
+        Running data ->
+            let
+                (Ms startTime) =
+                    data.startTime
+
+                (Ms countdown) =
+                    data.countdown
+
+                (Ms currentTime) =
+                    data.currentTime
+            in
+            Ms <|
+                countdown
+                    - roundToTick (currentTime - startTime)
 
 
 viewTimer : Timer -> Element Msg
 viewTimer timer =
     let
-        ( timerStr, timerColour ) =
+        timerStr =
+            calculateCurrentCountdown timer
+                |> countdownToString
+
+        timerColour =
             case timer of
                 Stopped ->
-                    ( countdownToString <| Ms elmodoro
-                    , grey
-                    )
+                    grey
 
                 Finished ->
-                    ( countdownToString <| Ms 0
-                    , grey
-                    )
+                    grey
 
                 Paused countdown ->
-                    ( countdownToString countdown
-                    , grey
-                    )
+                    grey
 
                 Running data ->
-                    let
-                        (Ms startTime) =
-                            data.startTime
-
-                        (Ms countdown) =
-                            data.countdown
-
-                        (Ms currentTime) =
-                            data.currentTime
-
-                        ms =
-                            countdown - roundToTick (currentTime - startTime)
-                    in
-                    ( countdownToString <| Ms ms
-                    , black
-                    )
+                    black
 
         classes =
             if timer == Finished then
