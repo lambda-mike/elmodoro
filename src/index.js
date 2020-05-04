@@ -16,7 +16,6 @@ import { Elm } from './Main.elm'
   }
 
   const app = Elm.Main.init({
-    node: document.querySelector('main'),
     flags: {
       width: window.innerWidth || 360,
       height: window.innerHeight || 640,
